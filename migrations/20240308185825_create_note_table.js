@@ -12,7 +12,7 @@ exports.up = function (knex) {
       .references("highlight.id")
       .onUpdate("CASCADE")
       .onDelete("CASCADE");
-    table.string("note").notNullable();
+    table.string("note_passage").notNullable();
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table
       .timestamp("updated_at")

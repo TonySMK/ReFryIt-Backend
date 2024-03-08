@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3000;
 //Middleware
 app.use(cors());
 app.use(express.json());
+// FIXME: i do not exactly know what express.json() really does...
 
 //Routes
 app.use("/some/hightlights", highlightsRoute);
