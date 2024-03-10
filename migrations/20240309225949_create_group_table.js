@@ -3,14 +3,9 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-  return knex.schema.createTable("highlight", (table) => {
+  return knex.schema.createTable("group", (table) => {
     table.increments("id").primary();
-    table.string("title").notNullable();
-    table.string("highlight_passage").notNullable();
-    table.string("domain").notNullable();
-    table.string("domain_path").notNullable();
-    table.string("favicon_url");
-    table.string("group").notNullable();
+    table.string("keyword").notNullable();
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table
       .timestamp("updated_at")
@@ -23,5 +18,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-  return knex.schema.dropTable("highlight");
+  return knex.schema.dropTable("group");
 };

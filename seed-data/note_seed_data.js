@@ -1,5 +1,9 @@
 module.exports = [
-  { id: "1", highlight_id: "1", note_passage: "Who is Codd???" },
+  {
+    id: "1",
+    highlight_id: "1",
+    note_passage: "Who is Codd??? Who is Codd??? Who is Codd???",
+  },
   {
     id: "2",
     highlight_id: "1",

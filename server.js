@@ -5,8 +5,9 @@ const cors = require("cors");
 const knex = require("knex")(require("./knexfile"));
 const bodyParser = require("body-parser");
 
-const highlightsRoute = require("./routes/Highlight/HighlightsRoute");
-const notesRoute = require("./routes/Note/NotesRoute");
+const grouproute = require("./routes/group/GroupRoute");
+const highlightsRoute = require("./routes/highlight/HighlightsRoute");
+const notesRoute = require("./routes/note/NotesRoute");
 
 const PORT = process.env.PORT || 3000;
 let isodate = new Date().toISOString();
@@ -20,6 +21,7 @@ app.use(bodyParser.json());
 // MAGIC: i can not tell if bodyParser is actually doing any...
 
 //Routes
+app.use("/api/groups", grouproute);
 app.use("/api/highlights", highlightsRoute);
 app.use("/api/notes", notesRoute);
 

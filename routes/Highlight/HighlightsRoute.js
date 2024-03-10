@@ -12,21 +12,37 @@ router.get("/", (req, res) => {
     });
 });
 
-// Gets most recent highlights, specific number of highlights
+// Get highlights by recents
 router.get("/filter/recent/:amount", (req, res) => {
-  let fitleramount = Number(req.params.amount);
+  let fitlerAmount = Number(req.params.amount);
   // res.send(fitleramount);
   knex
     .select("*")
     .from("highlight")
     .orderBy("updated_at", "desc")
-    .limit(fitleramount)
+    .limit(fitlerAmount)
     .then((data) => {
       res.status(200).json(data);
     });
 });
 
-// Insert highlight data into highlight table
+// Get highlights by group_id
+router.get("/filter/group/:group/:amount", (req, res) => {
+  const fitlerAmount = Number(req.params.amount);
+  const selectedGroupID = Number(req.params.group);
+
+  knex
+    .select("*")
+    .from("highlight")
+    .where("group_id", selectedGroupID)
+    .orderBy("updated_at", "desc")
+    .limit(fitlerAmount)
+    .then((data) => {
+      res.status(200).json(data);
+    });
+});
+
+// Create: Insert highlight data into highlight table
 router.post("/", (req, res) => {
   const { title, highlight_passage, domain, domain_path, favicon_url, group } =
     req.body;
@@ -44,6 +60,33 @@ router.post("/", (req, res) => {
         console.log(`created ${title}`);
       });
   }
+});
+
+router.delete("/:highlightID", (req, res) => {
+  const selectedHighlighID = Number(req.params.highlightID);
+  console.log(selectedHighlighID);
+  knex
+    .select("*")
+    .from("highlight")
+    .where("id", selectedHighlighID)
+    .then((data) => {
+      // res.json(data);
+      // res.json(data.length);
+      if (data.length === 0 || data.length > 1) {
+        res.status(404).send(`Highlight ${deleteID} not found`);
+      } else {
+        knex
+          .from("highlight")
+          .where("id", selectedHighlighID)
+          .del()
+          .then((row) => {
+            res.send("deleted!");
+          });
+      }
+    })
+    .catch((e) => {
+      res.status(404).send(e);
+    });
 });
 
 module.exports = router;
