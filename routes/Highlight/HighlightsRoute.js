@@ -62,6 +62,7 @@ router.post("/", (req, res) => {
   }
 });
 
+// deletes a specific highlight
 router.delete("/:highlightID", (req, res) => {
   const selectedHighlighID = Number(req.params.highlightID);
   console.log(selectedHighlighID);
@@ -88,5 +89,8 @@ router.delete("/:highlightID", (req, res) => {
       res.status(404).send(e);
     });
 });
+
+// updates a specific highlight attribute
+router.patch("update/:id/:columnname/value", (req, res) => {});
 
 module.exports = router;
