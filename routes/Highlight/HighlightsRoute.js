@@ -12,6 +12,18 @@ router.get("/", (req, res) => {
     });
 });
 
+// Gets specific hightlight
+router.get("/specific/:id", (req, res) => {
+  const selectID = req.params.id;
+  knex
+    .select("*")
+    .from("highlight")
+    .where("id", selectID)
+    .then((data) => {
+      res.status(200).json(data);
+    });
+});
+
 // Get highlights by recents
 router.get("/filter/recent/:amount", (req, res) => {
   let fitlerAmount = Number(req.params.amount);
@@ -62,6 +74,7 @@ router.post("/", (req, res) => {
   }
 });
 
+// deletes a specific highlight
 router.delete("/:highlightID", (req, res) => {
   const selectedHighlighID = Number(req.params.highlightID);
   console.log(selectedHighlighID);
@@ -86,6 +99,81 @@ router.delete("/:highlightID", (req, res) => {
     })
     .catch((e) => {
       res.status(404).send(e);
+    });
+});
+
+// updates a specific highlight attribute
+router.patch("/:id", (req, res) => {
+  const highlightID = req.params.id;
+  const toUpdateData = req.body;
+  let theobject = { name: "sam", last: "jam" };
+
+  knex
+    .from("highlight")
+    .where("id", highlightID)
+    .then((data) => {
+      // console.log(data[0]);
+      // console.log(Object.keys(data[0]));
+      const selectedTableObjectKeys = Object.keys(data[0]);
+      const bodyObjectKeys = Object.keys(toUpdateData);
+      console.log(selectedTableObjectKeys);
+      console.log(bodyObjectKeys);
+
+      // we are checking if the submitted update keys match with
+      // existing keys in row that wants is going to get changed
+
+      try {
+        bodyObjectKeys.forEach((key) => {
+          if (!selectedTableObjectKeys.includes(key)) {
+            throw error;
+          }
+          // console.log("y");
+        });
+      } catch (error) {
+        // console.log("n");
+        res.status(406).send("Incorrent object1");
+      }
+
+      //---------------------------------
+      // first attmept
+      // let matchStatusArray = [];
+      // let dobreak = true;
+      // while (dobreak) {
+      //   bodyObjectKeys.forEach((key) => {
+      //     for (let i = 0; i < selectedTableObjectKeys.length; i++) {
+      //       if (!selectedTableObjectKeys.includes(key)) {
+      //         // matchStatusArray.push(false);
+      //         console.log("a");
+      //         dobreak = false
+      //         // return res.status(406).send("Incorrent object1");
+      //       } else {
+      //         // matchStatusArray.push(true);
+      //         console.log("b");
+      //       }
+      //     }
+      //   });
+      // }
+    })
+    .then(() => {
+      // res.send("great!!!");
+      // this actually update the changed fields
+      knex
+        .from("highlight")
+        .where("id", highlightID)
+        .update(toUpdateData)
+        .then(() => {
+          // this returns the object that was successfuly modified
+          knex
+            .select("*")
+            .from("highlight")
+            .where("id", highlightID)
+            .then((data) => {
+              res.status(200).json(data);
+            });
+        })
+        .catch((error) => {
+          res.status(406).send("Incorrent object2");
+        });
     });
 });
 
