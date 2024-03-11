@@ -112,16 +112,13 @@ router.patch("/:id", (req, res) => {
     .from("highlight")
     .where("id", highlightID)
     .then((data) => {
-      // console.log(data[0]);
-      // console.log(Object.keys(data[0]));
       const selectedTableObjectKeys = Object.keys(data[0]);
       const bodyObjectKeys = Object.keys(toUpdateData);
-      console.log(selectedTableObjectKeys);
-      console.log(bodyObjectKeys);
 
       // we are checking if the submitted update keys match with
       // existing keys in row that wants is going to get changed
 
+      const promisecallbackstatus = true;
       try {
         bodyObjectKeys.forEach((key) => {
           if (!selectedTableObjectKeys.includes(key)) {
@@ -131,28 +128,12 @@ router.patch("/:id", (req, res) => {
         });
       } catch (error) {
         // console.log("n");
-        res.status(406).send("Incorrent object1");
+        promisecallbackstatus = false;
       }
 
-      //---------------------------------
-      // first attmept
-      // let matchStatusArray = [];
-      // let dobreak = true;
-      // while (dobreak) {
-      //   bodyObjectKeys.forEach((key) => {
-      //     for (let i = 0; i < selectedTableObjectKeys.length; i++) {
-      //       if (!selectedTableObjectKeys.includes(key)) {
-      //         // matchStatusArray.push(false);
-      //         console.log("a");
-      //         dobreak = false
-      //         // return res.status(406).send("Incorrent object1");
-      //       } else {
-      //         // matchStatusArray.push(true);
-      //         console.log("b");
-      //       }
-      //     }
-      //   });
-      // }
+      if (!promisecallbackstatus) {
+        throw error;
+      }
     })
     .then(() => {
       // res.send("great!!!");
@@ -174,6 +155,9 @@ router.patch("/:id", (req, res) => {
         .catch((error) => {
           res.status(406).send("Incorrent object2");
         });
+    })
+    .catch((error) => {
+      res.status(406).send("Incorrent object2");
     });
 });
 
