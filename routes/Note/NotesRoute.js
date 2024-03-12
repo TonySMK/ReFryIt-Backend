@@ -34,4 +34,31 @@ router.get("/:id", (req, res) => {
     });
 });
 
+// Create a note for specific highlight
+router.post("/:id", (req, res) => {
+  const newNoteData = req.body;
+  // console.log(newNoteData);
+  const { highlight_id, note_passage, ...others } = newNoteData;
+  // console.log(highlight_id, note_passage);
+  let otherattributearray = Object.keys(others);
+  // console.log(otherattributearray.length);
+
+  if (!highlight_id || !note_passage || otherattributearray !== 0) {
+    // res.send("tripped");
+    res.status(406).send("Incorrect inputs");
+  } else {
+    // res.send("not tripped");
+    knex
+      .from("note")
+      .insert(newNoteData)
+      .then((data) => {
+        res.status(201).json(newHighlightData);
+        console.log(`created note`);
+      })
+      .catch((error) => {
+        res.status(406).send(`Failed to create note: ${error}`);
+      });
+  }
+});
+
 module.exports = router;

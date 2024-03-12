@@ -24,6 +24,8 @@ router.get("/specific/:id", (req, res) => {
     .where("id", selectID)
     .then((data) => {
       res.status(200).json(data);
+      // FIXME: do we need to implement somesort of validation for
+      // highlight id that do exist?
     })
     .catch((error) => {
       res.status(404).send(`ID not found`);
@@ -68,20 +70,37 @@ router.get("/filter/group/:group/:amount", (req, res) => {
 
 // Create: Insert highlight data into highlight table
 router.post("/", (req, res) => {
-  const { title, highlight_passage, domain, domain_path, favicon_url, group } =
-    req.body;
-  const postData = req.body;
+  const {
+    title,
+    highlight_passage,
+    domain,
+    domain_path,
+    favicon_url,
+    group,
+    ...others
+  } = req.body;
+  const newHighlightData = req.body;
+  let otherattributearray = Object.keys(others);
   // adding validationV1
-  if (!title || !highlight_passage || !domain || !domain_path || !group) {
-    console.log("missing input");
-    res.status(406).send("Incorrect input fields");
+  if (
+    !title ||
+    !highlight_passage ||
+    !domain ||
+    !domain_path ||
+    !group ||
+    otherattributearray !== 0
+  ) {
+    res.status(406).send("Incorrect inputs");
   } else {
     knex
       .from("highlight")
-      .insert(postData)
+      .insert(newHighlightData)
       .then((data) => {
-        res.status(201).json(postData);
+        res.status(201).json(newHighlightData);
         console.log(`created ${title}`);
+      })
+      .catch((error) => {
+        res.status(406).send(`Create highlight failed: ${error}`);
       });
   }
 });
@@ -114,11 +133,15 @@ router.delete("/:highlightID", (req, res) => {
     });
 });
 
-// updates a specific highlight attribute
+// updates a specific highlight attributes v1
 router.patch("/:id", (req, res) => {
   const highlightID = req.params.id;
   const toUpdateData = req.body;
-  let theobject = { name: "sam", last: "jam" };
+
+  console.log(toUpdateData);
+
+  // FIXME: do we need to implement somesort of validation for
+  // highlight id that do exist?
 
   knex
     .from("highlight")
@@ -128,7 +151,9 @@ router.patch("/:id", (req, res) => {
       const bodyObjectKeys = Object.keys(toUpdateData);
 
       // we are checking if the submitted update keys match with
-      // existing keys in row that wants is going to get changed
+      // existing keys in row that wants to get changed
+      // this method maintains itself, as we dont need to hardcode anything
+      // for it to check for..
 
       const promisecallbackstatus = true;
       try {
@@ -169,8 +194,56 @@ router.patch("/:id", (req, res) => {
         });
     })
     .catch((error) => {
-      res.status(406).send("Improper passed object");
+      res.status(406).send("Incorrect inputs");
     });
 });
+
+// updates a specific highlight attributes v2 incomplete
+// router.patch("/:id", (req, res) => {
+//   const highlightID = req.params.id;
+//   const toUpdateData = req.body;
+
+//   const {
+//     title,
+//     highlight_passage,
+//     group_id,
+//     domain,
+//     domain_path,
+//     favicon_url,
+//     star_status,
+//     visit_count,
+//     ...rest
+//   } = toUpdateData;
+
+//   const otherattributearray = Object.keys(rest);
+
+//   if (otherattributearray.length > 0) {
+//     res.send("tripped");
+//   }
+
+//   console.log(toUpdateData);
+
+//   knex
+//     //  this is the actual updating sections
+//     .from("highlight")
+//     .where("id", highlightID)
+//     .update(toUpdateData)
+//     .then(() => {
+//       // this returns the object that was successfuly modified
+//       knex
+//         .select("*")
+//         .from("highlight")
+//         .where("id", highlightID)
+//         .then((data) => {
+//           res.status(200).json(data);
+//           // FIXME: do we need to implement somesort of validation for
+//           // highlight id that do exist?
+//         })
+//         .catch((error) => res.status(400).send(error));
+//     })
+//     .catch((error) => {
+//       res.status(406).send("Update changed failed");
+//     });
+// });
 
 module.exports = router;
