@@ -69,6 +69,7 @@ router.patch("/:noteID", (req, res) => {
   const noteID = req.params.noteID;
   const toUpdateNotePassage = req.body;
 
+  // FIXME: Validation for checking for correct update fields method 1
   const { note_passage, ...others } = toUpdateNotePassage;
   console.log(note_passage);
 
