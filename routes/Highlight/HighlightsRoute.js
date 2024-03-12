@@ -34,7 +34,7 @@ router.get("/specific/:highlightID", (req, res) => {
 
 // Get highlights by recents
 router.get("/filter/recent/:amount", (req, res) => {
-  let fitlerAmount = Number(req.params.amount);
+  let fitlerAmount = req.params.amount;
   // res.send(fitleramount);
   knex
     .select("*")
@@ -51,8 +51,8 @@ router.get("/filter/recent/:amount", (req, res) => {
 
 // Get highlights by group_id
 router.get("/filter/group/:group/:amount", (req, res) => {
-  const fitlerAmount = Number(req.params.amount);
-  const selectedGroupID = Number(req.params.group);
+  const fitlerAmount = req.params.amount;
+  const selectedGroupID = req.params.group;
 
   knex
     .select("*")
@@ -68,7 +68,7 @@ router.get("/filter/group/:group/:amount", (req, res) => {
     });
 });
 
-// Create: Insert highlight data into highlight table
+// Create a new highlight
 router.post("/", (req, res) => {
   const {
     title,
@@ -76,7 +76,9 @@ router.post("/", (req, res) => {
     domain,
     domain_path,
     favicon_url,
-    group,
+    group_id,
+    star_status,
+    visit_count,
     ...others
   } = req.body;
   const newHighlightData = req.body;
@@ -87,7 +89,7 @@ router.post("/", (req, res) => {
     !highlight_passage ||
     !domain ||
     !domain_path ||
-    !group ||
+    !group_id ||
     otherattributearray != 0
   ) {
     res.status(406).send("Incorrect inputs");
@@ -107,8 +109,9 @@ router.post("/", (req, res) => {
 
 // delete a specific highlight
 router.delete("/:highlightID", (req, res) => {
-  const selectedHighlighID = Number(req.params.highlightID);
+  const selectedHighlighID = req.params.highlightID;
   console.log(selectedHighlighID);
+
   knex
     .select("*")
     .from("highlight")
@@ -117,19 +120,22 @@ router.delete("/:highlightID", (req, res) => {
       // res.json(data);
       // res.json(data.length);
       if (data.length === 0 || data.length > 1) {
-        res.status(404).send(`Highlight ${deleteID} not found`);
+        res.status(404).send(`Highlight not found`);
       } else {
         knex
           .from("highlight")
           .where("id", selectedHighlighID)
           .del()
           .then((row) => {
-            res.send("deleted!");
+            res.status(200).send("deleted!");
+          })
+          .catch((error) => {
+            res.status(500).send(error);
           });
       }
     })
     .catch((error) => {
-      res.status(404).json(`Delete Aborted ${error}`);
+      res.status(404).json(`Delete Aborted: ${error}`);
     });
 });
 
@@ -187,10 +193,13 @@ router.patch("/:highlightID", (req, res) => {
             .where("id", highlightID)
             .then((data) => {
               res.status(200).json(data);
+            })
+            .catch((error) => {
+              res.status(500).send(error);
             });
         })
         .catch((error) => {
-          res.status(406).send("Update changed failed");
+          res.status(406).send(`Update changed aborted: ${error}`);
         });
     })
     .catch((error) => {
