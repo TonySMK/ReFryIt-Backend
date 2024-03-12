@@ -4,6 +4,9 @@ const knex = require("knex")(require("../../knexfile"));
 
 // Get all notes
 router.get("/", (req, res) => {
+  // FIXME: might need a validator when there are no notes...
+  // atm, an empty array get returned
+
   knex
     .select("*")
     .from("note")
@@ -61,6 +64,7 @@ router.post("/", (req, res) => {
   }
 });
 
+//Update a note's note content
 router.patch("/:noteID", (req, res) => {
   const noteID = req.params.noteID;
   const toUpdateNotePassage = req.body;
@@ -86,12 +90,48 @@ router.patch("/:noteID", (req, res) => {
           .where("id", noteID)
           .then((data) => {
             res.status(200).json(data);
+          })
+          .catch((error) => {
+            res.status(500).send(error);
           });
       })
       .catch((error) => {
-        res.status(406).send("Update changed failed");
+        res.status(406).send(`Update changed aborted: ${error}`);
       });
   }
+});
+
+//Delete a specific note
+router.delete("/:noteID", (req, res) => {
+  const selectedNoteID = req.params.noteID;
+
+  knex
+    .select("*")
+    .from("note")
+    .where("id", selectedNoteID)
+    .then((data) => {
+      // res.json(data);
+      // res.json(data.length);
+      if (data.length === 0 || data.length > 1) {
+        res.status(404).send(`Note not found`);
+      } else {
+        knex
+          .from("note")
+          .where("id", selectedNoteID)
+          .del()
+          .then((row) => {
+            res.status(200).send("deleted!");
+          })
+          .catch((error) => {
+            res.status(500).send(error);
+          });
+      }
+    })
+    .catch((error) => {
+      // FIXME: this catch.status seems out of place...
+      // in what situation would this get triggered?
+      res.status(404).json(`Delete Aborted: ${error}`);
+    });
 });
 
 module.exports = router;
