@@ -9,6 +9,9 @@ router.get("/", (req, res) => {
     .from("highlight")
     .then((data) => {
       res.status(200).json(data);
+    })
+    .catch((error) => {
+      res.status(404).send(`No Highlights`);
     });
 });
 
@@ -21,6 +24,9 @@ router.get("/specific/:id", (req, res) => {
     .where("id", selectID)
     .then((data) => {
       res.status(200).json(data);
+    })
+    .catch((error) => {
+      res.status(404).send(`ID not found`);
     });
 });
 
@@ -35,6 +41,9 @@ router.get("/filter/recent/:amount", (req, res) => {
     .limit(fitlerAmount)
     .then((data) => {
       res.status(200).json(data);
+    })
+    .catch((error) => {
+      res.status(404).send(`No Recent Highlights`);
     });
 });
 
@@ -51,6 +60,9 @@ router.get("/filter/group/:group/:amount", (req, res) => {
     .limit(fitlerAmount)
     .then((data) => {
       res.status(200).json(data);
+    })
+    .catch((error) => {
+      res.status(404).send(`No Highlights in group`);
     });
 });
 
@@ -62,7 +74,7 @@ router.post("/", (req, res) => {
   // adding validationV1
   if (!title || !highlight_passage || !domain || !domain_path || !group) {
     console.log("missing input");
-    res.status(406).send("missing input fields");
+    res.status(406).send("Incorrect input fields");
   } else {
     knex
       .from("highlight")
@@ -74,7 +86,7 @@ router.post("/", (req, res) => {
   }
 });
 
-// deletes a specific highlight
+// delete a specific highlight
 router.delete("/:highlightID", (req, res) => {
   const selectedHighlighID = Number(req.params.highlightID);
   console.log(selectedHighlighID);
@@ -97,8 +109,8 @@ router.delete("/:highlightID", (req, res) => {
           });
       }
     })
-    .catch((e) => {
-      res.status(404).send(e);
+    .catch((error) => {
+      res.status(404).json(`Delete Aborted ${error}`);
     });
 });
 
@@ -153,11 +165,11 @@ router.patch("/:id", (req, res) => {
             });
         })
         .catch((error) => {
-          res.status(406).send("Incorrent object2");
+          res.status(406).send("Update changed failed");
         });
     })
     .catch((error) => {
-      res.status(406).send("Incorrent object2");
+      res.status(406).send("Improper passed object");
     });
 });
 
