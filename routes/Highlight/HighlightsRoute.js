@@ -16,8 +16,8 @@ router.get("/", (req, res) => {
 });
 
 // Gets specific hightlight
-router.get("/specific/:id", (req, res) => {
-  const selectID = req.params.id;
+router.get("/specific/:highlightID", (req, res) => {
+  const selectID = req.params.highlightID;
   knex
     .select("*")
     .from("highlight")
@@ -134,9 +134,9 @@ router.delete("/:highlightID", (req, res) => {
 });
 
 // updates a specific highlight attributes v1
-router.patch("/:id", (req, res) => {
-  const highlightID = req.params.id;
-  const toUpdateData = req.body;
+router.patch("/:highlightID", (req, res) => {
+  const highlightID = req.params.highlightID;
+  const toUpdateHighlightData = req.body;
 
   console.log(toUpdateData);
 
@@ -148,7 +148,7 @@ router.patch("/:id", (req, res) => {
     .where("id", highlightID)
     .then((data) => {
       const selectedTableObjectKeys = Object.keys(data[0]);
-      const bodyObjectKeys = Object.keys(toUpdateData);
+      const bodyObjectKeys = Object.keys(toUpdateHighlightData);
 
       // we are checking if the submitted update keys match with
       // existing keys in row that wants to get changed
@@ -178,7 +178,7 @@ router.patch("/:id", (req, res) => {
       knex
         .from("highlight")
         .where("id", highlightID)
-        .update(toUpdateData)
+        .update(toUpdateHighlightData)
         .then(() => {
           // this returns the object that was successfuly modified
           knex
@@ -199,51 +199,51 @@ router.patch("/:id", (req, res) => {
 });
 
 // updates a specific highlight attributes v2 incomplete
-// router.patch("/:id", (req, res) => {
-//   const highlightID = req.params.id;
-//   const toUpdateData = req.body;
+router.patch("/test/:highlightID", (req, res) => {
+  const highlightID = req.params.highlightID;
+  const toUpdateData = req.body;
 
-//   const {
-//     title,
-//     highlight_passage,
-//     group_id,
-//     domain,
-//     domain_path,
-//     favicon_url,
-//     star_status,
-//     visit_count,
-//     ...rest
-//   } = toUpdateData;
+  const {
+    title,
+    highlight_passage,
+    group_id,
+    domain,
+    domain_path,
+    favicon_url,
+    star_status,
+    visit_count,
+    ...rest
+  } = toUpdateData;
 
-//   const otherattributearray = Object.keys(rest);
+  const otherattributearray = Object.keys(rest);
 
-//   if (otherattributearray.length > 0) {
-//     res.send("tripped");
-//   }
+  if (otherattributearray.length > 0) {
+    res.send("tripped");
+  }
 
-//   console.log(toUpdateData);
+  console.log(toUpdateData);
 
-//   knex
-//     //  this is the actual updating sections
-//     .from("highlight")
-//     .where("id", highlightID)
-//     .update(toUpdateData)
-//     .then(() => {
-//       // this returns the object that was successfuly modified
-//       knex
-//         .select("*")
-//         .from("highlight")
-//         .where("id", highlightID)
-//         .then((data) => {
-//           res.status(200).json(data);
-//           // FIXME: do we need to implement somesort of validation for
-//           // highlight id that do exist?
-//         })
-//         .catch((error) => res.status(400).send(error));
-//     })
-//     .catch((error) => {
-//       res.status(406).send("Update changed failed");
-//     });
-// });
+  knex
+    //  this is the actual updating sections
+    .from("highlight")
+    .where("id", highlightID)
+    .update(toUpdateData)
+    .then(() => {
+      // this returns the object that was successfuly modified
+      knex
+        .select("*")
+        .from("highlight")
+        .where("id", highlightID)
+        .then((data) => {
+          res.status(200).json(data);
+          // FIXME: do we need to implement somesort of validation for
+          // highlight id that do exist?
+        })
+        .catch((error) => res.status(400).send(error));
+    })
+    .catch((error) => {
+      res.status(406).send("Update changed failed");
+    });
+});
 
 module.exports = router;
