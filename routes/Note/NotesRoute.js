@@ -43,7 +43,7 @@ router.post("/:id", (req, res) => {
   let otherattributearray = Object.keys(others);
   // console.log(otherattributearray.length);
 
-  if (!highlight_id || !note_passage || otherattributearray !== 0) {
+  if (!highlight_id || !note_passage || otherattributearray != 0) {
     // res.send("tripped");
     res.status(406).send("Incorrect inputs");
   } else {
@@ -52,7 +52,7 @@ router.post("/:id", (req, res) => {
       .from("note")
       .insert(newNoteData)
       .then((data) => {
-        res.status(201).json(newHighlightData);
+        res.status(201).json(newNoteData);
         console.log(`created note`);
       })
       .catch((error) => {

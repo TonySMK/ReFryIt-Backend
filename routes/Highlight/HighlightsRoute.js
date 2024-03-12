@@ -88,7 +88,7 @@ router.post("/", (req, res) => {
     !domain ||
     !domain_path ||
     !group ||
-    otherattributearray !== 0
+    otherattributearray != 0
   ) {
     res.status(406).send("Incorrect inputs");
   } else {
