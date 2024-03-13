@@ -69,12 +69,13 @@ router.patch("/:noteID", (req, res) => {
   const noteID = req.params.noteID;
   const toUpdateNotePassage = req.body;
 
+  // FIXME: Validation for checking for correct update fields method 1
   const { note_passage, ...others } = toUpdateNotePassage;
   console.log(note_passage);
 
   const otherattributearray = Object.keys(others);
 
-  if (!note_passage || otherattributearray.length > 0) {
+  if (!note_passage || otherattributearray.length != 0) {
     res.status(406).send("Incorrect inputs");
   } else {
     // res.send("passed");

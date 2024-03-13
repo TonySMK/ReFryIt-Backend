@@ -20,3 +20,5 @@ exports.up = function (knex) {
 exports.down = function (knex) {
   return knex.schema.dropTable("group");
 };
+
+// FIXME: is there a way to change the format of the timestamp, from iso => utc

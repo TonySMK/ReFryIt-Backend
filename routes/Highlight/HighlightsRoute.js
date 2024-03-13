@@ -162,6 +162,7 @@ router.patch("/:highlightID", (req, res) => {
       // for it to check for..
 
       const promisecallbackstatus = true;
+      // FIXME: Validation for checking for correct update fields method 0
       try {
         bodyObjectKeys.forEach((key) => {
           if (!selectedTableObjectKeys.includes(key)) {
