@@ -84,6 +84,11 @@ router.post("/", (req, res) => {
   const newHighlightData = req.body;
   let otherattributearray = Object.keys(others);
   // adding validationV1
+  // FIXME: do we need to validate for using group.ids that
+  // dont exist?
+  // ANSWER: the db will pickup on the fact that we are trying
+  // use a goup.id foreign key that does not exist yet
+
   if (
     !title ||
     !highlight_passage ||
@@ -159,7 +164,7 @@ router.patch("/:highlightID", (req, res) => {
       // we are checking if the submitted update keys match with
       // existing keys in row that wants to get changed
       // this method maintains itself, as we dont need to hardcode anything
-      // for it to check for..
+      // for it do a check for..
 
       const promisecallbackstatus = true;
       // FIXME: Validation for checking for correct update fields method 0
