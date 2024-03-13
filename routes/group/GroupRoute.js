@@ -78,4 +78,33 @@ router.patch("/:groupID", (req, res) => {
   }
 });
 
+// Delete a group
+router.delete("/:groupID", (req, res) => {
+  const selectedGroupID = req.params.groupID;
+
+  knex
+    .select("*")
+    .from("group")
+    .where("id", selectedGroupID)
+    .then((data) => {
+      if (data.length === 0 || data.length > 1) {
+        res.status(404).send(`Group not found`);
+      } else {
+        knex
+          .from("group")
+          .where("id", selectedGroupID)
+          .del()
+          .then(() => {
+            res.status(200).send(`Deleted Group!`);
+          })
+          .catch((error) => {
+            res.status(500).send(`delete unsuccessful ${error}`);
+          });
+      }
+    })
+    .catch((error) => {
+      res.status(404).json(`Delete Aborted: ${error}`);
+    });
+});
+
 module.exports = router;
