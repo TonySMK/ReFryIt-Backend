@@ -49,9 +49,27 @@ router.get("/filter/recent/:amount", (req, res) => {
     });
 });
 
-// Get highlights by group_id
-router.get("/filter/group/:group/:amount", (req, res) => {
-  const fitlerAmount = req.params.amount;
+// Get highlights by group_id V1
+// router.get("/filter/group/:group/:amount", (req, res) => {
+//   const fitlerAmount = req.params.amount;
+//   const selectedGroupID = req.params.group;
+
+//   knex
+//     .select("*")
+//     .from("highlight")
+//     .where("group_id", selectedGroupID)
+//     .orderBy("updated_at", "desc")
+//     .limit(fitlerAmount)
+//     .then((data) => {
+//       res.status(200).json(data);
+//     })
+//     .catch((error) => {
+//       res.status(404).send(`No Highlights in group`);
+//     });
+// });
+
+// Get highlights by group_id V2
+router.get("/filter/group/:group", (req, res) => {
   const selectedGroupID = req.params.group;
 
   knex
@@ -59,7 +77,6 @@ router.get("/filter/group/:group/:amount", (req, res) => {
     .from("highlight")
     .where("group_id", selectedGroupID)
     .orderBy("updated_at", "desc")
-    .limit(fitlerAmount)
     .then((data) => {
       res.status(200).json(data);
     })

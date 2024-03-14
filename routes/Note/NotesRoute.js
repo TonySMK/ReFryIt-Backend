@@ -75,7 +75,7 @@ router.patch("/:noteID", (req, res) => {
 
   const otherattributearray = Object.keys(others);
 
-  if (!note_passage || otherattributearray.length != 0) {
+  if (!note_passage || otherattributearray.length != -0) {
     res.status(406).send("Incorrect inputs");
   } else {
     // res.send("passed");
