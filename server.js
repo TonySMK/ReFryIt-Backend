@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 
 const grouproute = require("./routes/group/GroupRoute");
 const highlightsRoute = require("./routes/highlight/HighlightsRoute");
-const notesRoute = require("./routes/note/NotesRoute");
+const notesRoute = require("./routes/Note/NotesRoute");
 
 const PORT = process.env.PORT || 3000;
 let isodate = new Date().toISOString();

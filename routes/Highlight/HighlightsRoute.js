@@ -33,14 +33,14 @@ router.get("/specific/:highlightID", (req, res) => {
 });
 
 // Get highlights by recents
-router.get("/filter/recent/:amount", (req, res) => {
-  let fitlerAmount = req.params.amount;
+router.get("/filter/recent", (req, res) => {
+  // let fitlerAmount = req.params.amount;
   // res.send(fitleramount);
   knex
     .select("*")
     .from("highlight")
     .orderBy("updated_at", "desc")
-    .limit(fitlerAmount)
+    .limit(10)
     .then((data) => {
       res.status(200).json(data);
     })
@@ -49,24 +49,20 @@ router.get("/filter/recent/:amount", (req, res) => {
     });
 });
 
-// Get highlights by group_id V1
-// router.get("/filter/group/:group/:amount", (req, res) => {
-//   const fitlerAmount = req.params.amount;
-//   const selectedGroupID = req.params.group;
-
-//   knex
-//     .select("*")
-//     .from("highlight")
-//     .where("group_id", selectedGroupID)
-//     .orderBy("updated_at", "desc")
-//     .limit(fitlerAmount)
-//     .then((data) => {
-//       res.status(200).json(data);
-//     })
-//     .catch((error) => {
-//       res.status(404).send(`No Highlights in group`);
-//     });
-// });
+// Get highlights by favorite
+router.get("/filter/favorite", (req, res) => {
+  knex
+    .select("*")
+    .from("highlight")
+    .orderBy("updated_at", "desc")
+    .where("star_status", 1)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => {
+      res.status(404).send(`No Recent Highlights`);
+    });
+});
 
 // Get highlights by group_id V2
 router.get("/filter/group/:group", (req, res) => {
@@ -231,51 +227,51 @@ router.patch("/:highlightID", (req, res) => {
 });
 
 // updates a specific highlight attributes v2 incomplete
-router.patch("/test/:highlightID", (req, res) => {
-  const highlightID = req.params.highlightID;
-  const toUpdateData = req.body;
+// router.patch("/test/:highlightID", (req, res) => {
+//   const highlightID = req.params.highlightID;
+//   const toUpdateData = req.body;
 
-  const {
-    title,
-    highlight_passage,
-    group_id,
-    domain,
-    domain_path,
-    favicon_url,
-    star_status,
-    visit_count,
-    ...rest
-  } = toUpdateData;
+//   const {
+//     title,
+//     highlight_passage,
+//     group_id,
+//     domain,
+//     domain_path,
+//     favicon_url,
+//     star_status,
+//     visit_count,
+//     ...rest
+//   } = toUpdateData;
 
-  const otherattributearray = Object.keys(rest);
+//   const otherattributearray = Object.keys(rest);
 
-  if (otherattributearray.length > 0) {
-    res.send("tripped");
-  }
+//   if (otherattributearray.length > 0) {
+//     res.send("tripped");
+//   }
 
-  console.log(toUpdateData);
+//   console.log(toUpdateData);
 
-  knex
-    //  this is the actual updating sections
-    .from("highlight")
-    .where("id", highlightID)
-    .update(toUpdateData)
-    .then(() => {
-      // this returns the object that was successfuly modified
-      knex
-        .select("*")
-        .from("highlight")
-        .where("id", highlightID)
-        .then((data) => {
-          res.status(200).json(data);
-          // FIXME: do we need to implement somesort of validation for
-          // highlight id that do exist?
-        })
-        .catch((error) => res.status(400).send(error));
-    })
-    .catch((error) => {
-      res.status(406).send("Update changed failed");
-    });
-});
+//   knex
+//     //  this is the actual updating sections
+//     .from("highlight")
+//     .where("id", highlightID)
+//     .update(toUpdateData)
+//     .then(() => {
+//       // this returns the object that was successfuly modified
+//       knex
+//         .select("*")
+//         .from("highlight")
+//         .where("id", highlightID)
+//         .then((data) => {
+//           res.status(200).json(data);
+//           // FIXME: do we need to implement somesort of validation for
+//           // highlight id that do exist?
+//         })
+//         .catch((error) => res.status(400).send(error));
+//     })
+//     .catch((error) => {
+//       res.status(406).send("Update changed failed");
+//     });
+// });
 
 module.exports = router;
