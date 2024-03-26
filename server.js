@@ -6,8 +6,8 @@ const knex = require("knex")(require("./knexfile"));
 const bodyParser = require("body-parser");
 
 const grouproute = require("./routes/group/GroupRoute");
-const highlightsRoute = require("./routes/highlight/HighlightsRoute");
-const notesRoute = require("./routes/note/NotesRoute");
+const highlightsRoute = require("./routes/Highlight/HighlightsRoute");
+const notesRoute = require("./routes/Note/NotesRoute");
 
 const PORT = process.env.PORT || 3000;
 let isodate = new Date().toISOString();
@@ -16,9 +16,7 @@ console.log(isodate);
 //Middleware
 app.use(cors());
 app.use(express.json());
-// FIXME: i do not exactly know what express.json() really does...
 app.use(bodyParser.json());
-// MAGIC: i can not tell if bodyParser is actually doing any...
 
 //Routes
 app.use("/api/groups", grouproute);
@@ -26,7 +24,6 @@ app.use("/api/highlights", highlightsRoute);
 app.use("/api/notes", notesRoute);
 
 //Test Route
-
 app.get("/test1", (req, res) => {
   res.send("CONNECTED TO REFRYIT BACKEND");
 });
