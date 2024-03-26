@@ -34,8 +34,6 @@ router.get("/specific/:highlightID", (req, res) => {
 
 // Get highlights by recents
 router.get("/filter/recent", (req, res) => {
-  // let fitlerAmount = req.params.amount;
-  // res.send(fitleramount);
   knex
     .select("*")
     .from("highlight")
@@ -96,11 +94,6 @@ router.post("/", (req, res) => {
   } = req.body;
   const newHighlightData = req.body;
   let otherattributearray = Object.keys(others);
-  // adding validationV1
-  // FIXME: do we need to validate for using group.ids that
-  // dont exist?
-  // ANSWER: the db will pickup on the fact that we are trying
-  // use a goup.id foreign key that does not exist yet
 
   if (
     !title ||
@@ -225,53 +218,5 @@ router.patch("/:highlightID", (req, res) => {
       res.status(406).send("Incorrect inputs");
     });
 });
-
-// updates a specific highlight attributes v2 incomplete
-// router.patch("/test/:highlightID", (req, res) => {
-//   const highlightID = req.params.highlightID;
-//   const toUpdateData = req.body;
-
-//   const {
-//     title,
-//     highlight_passage,
-//     group_id,
-//     domain,
-//     domain_path,
-//     favicon_url,
-//     star_status,
-//     visit_count,
-//     ...rest
-//   } = toUpdateData;
-
-//   const otherattributearray = Object.keys(rest);
-
-//   if (otherattributearray.length > 0) {
-//     res.send("tripped");
-//   }
-
-//   console.log(toUpdateData);
-
-//   knex
-//     //  this is the actual updating sections
-//     .from("highlight")
-//     .where("id", highlightID)
-//     .update(toUpdateData)
-//     .then(() => {
-//       // this returns the object that was successfuly modified
-//       knex
-//         .select("*")
-//         .from("highlight")
-//         .where("id", highlightID)
-//         .then((data) => {
-//           res.status(200).json(data);
-//           // FIXME: do we need to implement somesort of validation for
-//           // highlight id that do exist?
-//         })
-//         .catch((error) => res.status(400).send(error));
-//     })
-//     .catch((error) => {
-//       res.status(406).send("Update changed failed");
-//     });
-// });
 
 module.exports = router;

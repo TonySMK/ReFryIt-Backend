@@ -4,9 +4,6 @@ const knex = require("knex")(require("../../knexfile"));
 
 // Get all notes
 router.get("/", (req, res) => {
-  // FIXME: might need a validator when there are no notes...
-  // atm, an empty array get returned
-
   knex
     .select("*")
     .from("note")
@@ -40,17 +37,12 @@ router.get("/:highlightID", (req, res) => {
 // Create a note for specific highlight
 router.post("/", (req, res) => {
   const newNoteData = req.body;
-  // console.log(newNoteData);
   const { highlight_id, note_passage, ...others } = newNoteData;
-  // console.log(highlight_id, note_passage);
   const otherattributearray = Object.keys(others);
-  // console.log(otherattributearray.length);
 
   if (!highlight_id || !note_passage || otherattributearray != 0) {
-    // res.send("tripped");
     res.status(406).send("Incorrect inputs");
   } else {
-    // res.send("not tripped");
     knex
       .from("note")
       .insert(newNoteData)
@@ -69,7 +61,6 @@ router.patch("/:noteID", (req, res) => {
   const noteID = req.params.noteID;
   const toUpdateNotePassage = req.body;
 
-  // FIXME: Validation for checking for correct update fields method 1
   const { note_passage, ...others } = toUpdateNotePassage;
   console.log(note_passage);
 
@@ -78,13 +69,11 @@ router.patch("/:noteID", (req, res) => {
   if (!note_passage || otherattributearray.length != -0) {
     res.status(406).send("Incorrect inputs");
   } else {
-    // res.send("passed");
     knex
       .from("note")
       .where("id", noteID)
       .update(toUpdateNotePassage)
       .then(() => {
-        // this returns the object that was successfuly modified
         knex
           .select("*")
           .from("note")
@@ -111,8 +100,6 @@ router.delete("/:noteID", (req, res) => {
     .from("note")
     .where("id", selectedNoteID)
     .then((data) => {
-      // res.json(data);
-      // res.json(data.length);
       if (data.length === 0 || data.length > 1) {
         res.status(404).send(`Note not found`);
       } else {
@@ -129,8 +116,6 @@ router.delete("/:noteID", (req, res) => {
       }
     })
     .catch((error) => {
-      // FIXME: this catch.status seems out of place...
-      // in what situation would this get triggered?
       res.status(404).json(`Delete Aborted: ${error}`);
     });
 });
