@@ -16,7 +16,7 @@ console.log(isodate);
 //Middleware
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
 //Routes
 app.use("/api/groups", grouproute);
