@@ -1,4 +1,5 @@
 const knex = require("knex")(require("../knexfile"));
+const dayjs = require("dayjs");
 
 const highlightGetAll = (req, res) => {
   console.log("getting all highlights");
@@ -21,7 +22,20 @@ const highlightGetOne = (req, res) => {
     .from("highlight")
     .where("id", selectID)
     .then((data) => {
-      res.status(200).json(data);
+      const modifiedData = data.map((row) => {
+        console.log(row);
+      });
+      // const isoCreatedTime = data[0].created_at;
+      // const isoUpdatedTime = data[0].updated_at;
+      // data[0].created_at = dayjs(isoCreatedTime).unix() * 1000;
+      // data[0].updated_at = dayjs(isoUpdatedTime).unix() * 1000;
+
+      // res.status(200).json(data);
+
+      // console.log((data[0].created_at = dayjs(isoTime).unix() * 1000));
+      // console.log(modifiedData);
+
+      res.send("fetched");
       // FIXME: do we need to implement somesort of validation for
       // highlight id that do exist?
     })
