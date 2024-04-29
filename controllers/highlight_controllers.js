@@ -35,7 +35,7 @@ const highlightGetRecent = (req, res) => {
   knex
     .select("*")
     .from("highlight")
-    .orderBy("updated_at", "desc")
+    .orderBy("created_at", "desc")
     .limit(10)
     .then((data) => {
       res.status(200).json(data);
@@ -148,7 +148,7 @@ const highlightUpdate = (req, res) => {
   const highlightID = req.params.highlightID;
   const toUpdateHighlightData = req.body;
 
-  console.log(toUpdateData);
+  console.log(toUpdateHighlightData);
 
   // FIXME: do we need to implement somesort of validation for
   // highlight id that do exist?
